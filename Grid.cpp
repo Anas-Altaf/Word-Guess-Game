@@ -2,11 +2,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <wincon.h>
-#include <windows.h>
+#include <windows.h> // This includes everything we need for Windows console
 #include <conio.h>
 #include <chrono>
 
+void Grid::setColor(int color)
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
+}
 Grid::Grid(int gridSize) : size(gridSize)
 {
     allocateGrid(size);
@@ -171,7 +175,6 @@ void Grid::placeDiagonally(int row, int col, const std::string &word)
         grid[row + i][col + i] = word[i];
     }
 }
-
 
 void Grid::displayGrid()
 {
