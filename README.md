@@ -230,7 +230,7 @@ This project is licensed under the MIT License.
 
 ## Acknowledgments
 
-- Developed by CodCop.
+- Developed by [CodCop](https://github.com/Anas-Altaf)
 - Inspired by classic word search puzzles.
 - Special thanks to contributors and open-source communities that support C++ development.
 
