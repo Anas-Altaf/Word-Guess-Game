@@ -13,7 +13,8 @@ class EasyMode : public Mode {
 public:
     EasyMode();
     void play() override;
-
+void loadedWords();
+    
 private:
     void loadWords();
     void startLevel(int levelNumber);

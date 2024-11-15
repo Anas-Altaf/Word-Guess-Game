@@ -1,4 +1,6 @@
-# Word Search Puzzle Game
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++# Word Search Puzzle Game
 
 A console-based word search puzzle game implemented in C++.
 
@@ -18,6 +20,7 @@ src/
 ```
 
 ### Features
+
 
 - Multiple difficulty levels
 - Colorful console interface

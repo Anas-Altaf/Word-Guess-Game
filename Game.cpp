@@ -71,7 +71,7 @@ void Game::showHighScores()
 }
 void Game::displayTitle()
 {
-    clearScreen();
+    //clearScreen();
     setColor(CYAN);
     std::cout << "\n╔═══════════════════════════════════╗\n";
     setColor(YELLOW);
@@ -275,12 +275,12 @@ void Game::processGuess()
     }
 
     Sleep(1500);
-    clearScreen();
+    //clearScreen();
 }
 
 void Game::showGameOver()
 {
-    clearScreen();
+    //clearScreen();
     std::cout << "=== GAME OVER ===\n";
     std::cout << "Final Score: " << currentScore << "\n";
     if (remainingWords == 0)
@@ -295,7 +295,7 @@ void Game::showGameOver()
 }
 void Game::showInstructions()
 {
-    clearScreen();
+    //clearScreen();
     std::cout << "Instructions:\n";
     std::cout << "- Find and guess the required number of words per level.\n";
     std::cout << "- Words can be found horizontally, vertically, or diagonally.\n";
@@ -305,7 +305,7 @@ void Game::showInstructions()
 
 void Game::aboutUs()
 {
-    clearScreen();
+    //clearScreen();
     std::cout << "About Us:\n";
     std::cout << "This game is developed by [Your Team Names].\n";
     pause();
@@ -313,7 +313,7 @@ void Game::aboutUs()
 
 void Game::exitGame()
 {
-    clearScreen();
+    //clearScreen();
     std::cout << "Thank you for playing!\n";
     Sleep(2000);
     exit(0);

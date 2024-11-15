@@ -22,6 +22,7 @@ private:
     int size;
     char **grid;
     std::vector<std::string> placedWords;
+    std::vector<std::string> foundWords;
 
     void fillRandomLetters();
     bool placeWord(const std::string &word);

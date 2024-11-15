@@ -5,32 +5,41 @@
 #include <conio.h>
 #include <windows.h>
 
-EasyMode::EasyMode() : player("Player", 0, 5) {
+EasyMode::EasyMode() : player("Player", 0, 5)
+{
     loadWords();
 }
 
-void EasyMode::loadWords() {
+void EasyMode::loadWords()
+{
     std::ifstream file("easy_words.txt");
-    if (file.is_open()) {
+    if (file.is_open())
+    {
         std::string word;
-        while (file >> word) {
-            if (word.length() >= 2 && word.length() <= 4) {
-                words.push_back(word);
-            }
+        while (file >> word)
+        {
+            // if (word.length() >= 2 && word.length() <= 4) {
+            words.push_back(word);
+            // }
         }
         file.close();
-    } else {
+    }
+    else
+    {
         std::cout << "Error: Unable to open easy_words.txt\n";
     }
+    loadedWords();
 }
 
-void EasyMode::play() {
+void EasyMode::play()
+{
     std::cout << "Enter your name: ";
     std::string name;
     std::cin >> name;
     player.setName(name);
 
-    for (int level = 1; level <= 3 && player.getRemainingChances() > 0; ++level) {
+    for (int level = 1; level <= 3 && player.getRemainingChances() > 0; ++level)
+    {
         startLevel(level);
     }
 
@@ -45,54 +54,80 @@ void EasyMode::play() {
     _getch();
 }
 
-void EasyMode::startLevel(int levelNumber) {
+void EasyMode::loadedWords()
+{
+    // After loading words
+    std::cout << "Loaded words:\n";
+    for (const auto &w : words)
+    {
+        std::cout << w << std::endl;
+    }
+}
+
+void EasyMode::startLevel(int levelNumber)
+{
     system("CLS");
     std::cout << "Easy Mode - Level " << levelNumber << "\n";
-    
-    int gridSize = (levelNumber == 1) ? 10 : (levelNumber == 2) ? 15 : 20;
-    int wordsToGuess = (levelNumber == 1) ? 3 : (levelNumber == 2) ? 5 : 7;
+
+    int gridSize = (levelNumber == 1) ? 10 : (levelNumber == 2) ? 15
+                                                                : 20;
+    int wordsToGuess = (levelNumber == 1) ? 3 : (levelNumber == 2) ? 5
+                                                                   : 7;
 
     Grid grid(gridSize);
     grid.populateGrid(words);
     WordValidator validator(words, grid);
-    
+
     int guessedWords = 0;
 
-    while (guessedWords < wordsToGuess && player.getRemainingChances() > 0) {
+    while (guessedWords < wordsToGuess && player.getRemainingChances() > 0)
+    {
         grid.displayGrid();
         std::cout << "\nRemaining Chances: " << player.getRemainingChances() << "\n";
         std::cout << "Words Remaining to Guess: " << (wordsToGuess - guessedWords) << "\n";
         std::cout << "Enter word (2-4 letters): ";
-        
+
         std::string guess;
         std::cin >> guess;
 
-        if (validator.isValidWord(guess)) {
-            if (validator.isInGrid(guess)) {
-                if (!grid.checkWord(guess)) {
+        if (validator.isValidWord(guess))
+        {
+            if (validator.isInGrid(guess))
+            {
+                if (!grid.checkWord(guess))
+                {
                     std::cout << "Correct! Word found.\n";
                     player.updateScore(10);
                     guessedWords++;
                     grid.markWord(guess);
-                } else {
+                }
+                else
+                {
                     std::cout << "Word already found.\n";
                 }
-            } else {
+            }
+            else
+            {
                 std::cout << "Word not in grid.\n";
                 player.decreaseChance();
             }
-        } else {
+        }
+        else
+        {
             std::cout << "Invalid word.\n";
             player.decreaseChance();
         }
-        
+
         Sleep(1500);
         system("CLS");
     }
 
-    if (player.getRemainingChances() == 0) {
+    if (player.getRemainingChances() == 0)
+    {
         std::cout << "No remaining chances. Game Over.\n";
-    } else {
+    }
+    else
+    {
         std::cout << "Level " << levelNumber << " complete!\n";
         Sleep(1500);
     }

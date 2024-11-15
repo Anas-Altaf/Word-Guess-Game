@@ -48,7 +48,7 @@ void Grid::populateGrid(const std::vector<std::string> &words)
     {
         bool placed = false;
         int attempts = 0;
-        while (!placed && attempts < 100)
+        while (!placed && attempts < 1000)
         { // Limit attempts to avoid infinite loops
             placed = placeWord(word);
             attempts++;
@@ -256,10 +256,10 @@ char Grid::getCharAt(int row, int col) const
 
 bool Grid::checkWord(const std::string &word)
 {
-    // Since word placement is random, we can check if the word is among the placed words
-    for (const auto &placedWord : placedWords)
+    // Check if the word has already been found
+    for (const auto &foundWord : foundWords)
     {
-        if (word == placedWord)
+        if (word == foundWord)
         {
             return true;
         }
@@ -292,6 +292,7 @@ void Grid::markWord(const std::string &word)
                 {
                     grid[row][col + i] = '*'; // Mark with an asterisk
                 }
+                foundWords.push_back(word);
                 return;
             }
         }
@@ -317,6 +318,7 @@ void Grid::markWord(const std::string &word)
                 {
                     grid[row + i][col] = '*'; // Mark with an asterisk
                 }
+                foundWords.push_back(word);
                 return;
             }
         }
@@ -342,6 +344,7 @@ void Grid::markWord(const std::string &word)
                 {
                     grid[row + i][col + i] = '*'; // Mark with an asterisk
                 }
+                foundWords.push_back(word);
                 return;
             }
         }
@@ -367,6 +370,7 @@ void Grid::markWord(const std::string &word)
                 {
                     grid[row - i][col + i] = '*'; // Mark with an asterisk
                 }
+                foundWords.push_back(word);
                 return;
             }
         }
