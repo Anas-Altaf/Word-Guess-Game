@@ -1,5 +1,5 @@
+ali 150
 aLI 20
 Ali 10
 ali 10
-1 0
-Ali 0
+ali 10
