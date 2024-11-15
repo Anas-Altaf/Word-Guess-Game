@@ -5,12 +5,8 @@
 #include <windows.h> // This includes everything we need for Windows console
 #include <conio.h>
 #include <chrono>
+#include "Utility.h"
 
-void Grid::setColor(int color)
-{
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, color);
-}
 Grid::Grid(int gridSize) : size(gridSize)
 {
     allocateGrid(size);
@@ -38,11 +34,10 @@ void Grid::deallocateGrid()
     }
     delete[] grid;
 }
-
 void Grid::populateGrid(const std::vector<std::string> &words)
 {
     srand(static_cast<unsigned>(time(0)));
-    fillRandomLetters();
+    fillEmptyGrid(); // Initialize grid with spaces
 
     for (const auto &word : words)
     {
@@ -56,6 +51,30 @@ void Grid::populateGrid(const std::vector<std::string> &words)
         if (placed)
         {
             placedWords.push_back(word);
+            if (debugMode)
+            {
+                std::cout << "Successfully placed word: " << word << std::endl;
+            }
+        }
+        else
+        {
+            if (debugMode)
+            {
+                std::cerr << "Failed to place word: " << word << std::endl;
+            }
+        }
+    }
+
+    fillRandomLetters(); // Fill remaining empty cells with random letters
+}
+
+void Grid::fillEmptyGrid()
+{
+    for (int i = 0; i < size; ++i)
+    {
+        for (int j = 0; j < size; ++j)
+        {
+            grid[i][j] = ' '; // Initialize with spaces
         }
     }
 }
@@ -66,7 +85,10 @@ void Grid::fillRandomLetters()
     {
         for (int j = 0; j < size; ++j)
         {
-            grid[i][j] = 'A' + rand() % 26;
+            if (grid[i][j] == ' ') // Only fill cells that are still empty
+            {
+                grid[i][j] = 'A' + rand() % 26;
+            }
         }
     }
 }
@@ -112,7 +134,8 @@ bool Grid::canPlaceHorizontally(int row, int col, const std::string &word)
 
     for (int i = 0; i < wordLength; ++i)
     {
-        if (grid[row][col + i] != word[i] && grid[row][col + i] != ' ' && grid[row][col + i] != 'A' + rand() % 26)
+        char currentChar = grid[row][col + i];
+        if (currentChar != ' ' && currentChar != word[i])
         {
             return false;
         }
@@ -128,7 +151,8 @@ bool Grid::canPlaceVertically(int row, int col, const std::string &word)
 
     for (int i = 0; i < wordLength; ++i)
     {
-        if (grid[row + i][col] != word[i] && grid[row + i][col] != ' ' && grid[row + i][col] != 'A' + rand() % 26)
+        char currentChar = grid[row + i][col];
+        if (currentChar != ' ' && currentChar != word[i])
         {
             return false;
         }
@@ -144,7 +168,8 @@ bool Grid::canPlaceDiagonally(int row, int col, const std::string &word)
 
     for (int i = 0; i < wordLength; ++i)
     {
-        if (grid[row + i][col + i] != word[i] && grid[row + i][col + i] != ' ' && grid[row + i][col + i] != 'A' + rand() % 26)
+        char currentChar = grid[row + i][col + i];
+        if (currentChar != ' ' && currentChar != word[i])
         {
             return false;
         }
@@ -184,7 +209,7 @@ void Grid::displayGrid()
     {
         std::cout << "═══";
     }
-    std::cout << "╗\n";
+    std::cout << "═╗\n";
 
     // Column numbers
     std::cout << "   ║ ";
@@ -202,7 +227,7 @@ void Grid::displayGrid()
     {
         std::cout << "═══";
     }
-    std::cout << "╣\n";
+    std::cout << "═╣\n";
 
     // Grid content
     for (int i = 0; i < size; i++)
@@ -211,7 +236,6 @@ void Grid::displayGrid()
         std::cout << " " << i << " ";
         setColor(CYAN);
         std::cout << "║ ";
-
         for (int j = 0; j < size; j++)
         {
             if (grid[i][j] == '*')
@@ -224,7 +248,6 @@ void Grid::displayGrid()
             }
             std::cout << grid[i][j] << "  ";
         }
-
         setColor(CYAN);
         std::cout << "║\n";
     }
@@ -235,9 +258,8 @@ void Grid::displayGrid()
     {
         std::cout << "═══";
     }
-    std::cout << "╝\n\n";
-
-    setColor(RESET);
+    std::cout << "═╝\n\n";
+    setColor(RESET); // Reset color
 }
 
 int Grid::getSize() const

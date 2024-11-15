@@ -4,13 +4,16 @@
 #include <cstdlib>
 #include <conio.h>
 #include <windows.h>
+#include <algorithm>
+#include <ctime>
+#include <string>
 #include "Utility.h"
+#include "ScoreTracker.h"
 
 EasyMode::EasyMode() : player("Player", 0, 5)
 {
     loadWords();
 }
-
 void EasyMode::loadWords()
 {
     std::ifstream file("easy_words.txt");
@@ -22,14 +25,16 @@ void EasyMode::loadWords()
             word = toUpperCase(word);
             words.push_back(word);
         }
+
         file.close();
+
+        // Shuffle the words
+        shuffleWords(words);
     }
     else
     {
         std::cout << "Error: Unable to open easy_words.txt\n";
     }
-    //To See the Loaded Words
-    loadedWords();
 }
 
 void EasyMode::play()
@@ -44,7 +49,9 @@ void EasyMode::play()
         startLevel(level);
     }
 
-    std::cout << "\nGame Over!\n";
+    // Game Over Screen
+    system("CLS");
+    std::cout << "\n=== GAME OVER ===\n";
     std::cout << "Your Score: " << player.getScore() << "\n";
 
     ScoreTracker scoreTracker;
@@ -72,56 +79,40 @@ void EasyMode::startLevel(int levelNumber)
 
     int gridSize = (levelNumber == 1) ? 10 : (levelNumber == 2) ? 15
                                                                 : 20;
-    int wordsToGuess = (levelNumber == 1) ? 3 : (levelNumber == 2) ? 5
-                                                                   : 7;
+    int wordsToGuessCount = (levelNumber == 1) ? 3 : (levelNumber == 2) ? 5
+                                                                        : 7;
+
+    // Ensure there are enough words
+    if (words.size() < wordsToGuessCount)
+    {
+        std::cerr << "Not enough words available for this level!\n";
+        return;
+    }
+
+    // Shuffle the words vector
+    // shuffleWords(words);
+
+    // Select words for this level
+    std::vector<std::string> wordsToGuess(words.begin(), words.begin() + wordsToGuessCount);
+
+    // Remove selected words from words vector to prevent repetition
+    words.erase(words.begin(), words.begin() + wordsToGuessCount);
+
+    // Initialize remainingWords
+    remainingWords = wordsToGuess;
 
     Grid grid(gridSize);
-    grid.populateGrid(words);
-    WordValidator validator(words, grid);
+    grid.enableDebug(false);
+    grid.populateGrid(wordsToGuess);
+
+    WordValidator validator(wordsToGuess, grid);
 
     int guessedWords = 0;
-
-    while (guessedWords < wordsToGuess && player.getRemainingChances() > 0)
+    while (guessedWords < wordsToGuessCount && player.getRemainingChances() > 0)
     {
         grid.displayGrid();
-        std::cout << "\nRemaining Chances: " << player.getRemainingChances() << "\n";
-        std::cout << "Words Remaining to Guess: " << (wordsToGuess - guessedWords) << "\n";
-        std::cout << "Enter word (2-4 letters): ";
-
-        std::string guess;
-        std::cin >> guess;
-        guess = toUpperCase(guess);
-
-        if (validator.isValidWord(guess))
-        {
-            if (validator.isInGrid(guess))
-            {
-                if (!grid.checkWord(guess))
-                {
-                    std::cout << "Correct! Word found.\n";
-                    player.updateScore(10);
-                    guessedWords++;
-                    grid.markWord(guess);
-                }
-                else
-                {
-                    std::cout << "Word already found.\n";
-                }
-            }
-            else
-            {
-                std::cout << "Word not in grid.\n";
-                player.decreaseChance();
-            }
-        }
-        else
-        {
-            std::cout << "Invalid word.\n";
-            player.decreaseChance();
-        }
-
-        Sleep(1500);
-        system("CLS");
+        showGameStatus();
+        processGuess(guessedWords, wordsToGuessCount, validator, grid);
     }
 
     if (player.getRemainingChances() == 0)
@@ -133,4 +124,107 @@ void EasyMode::startLevel(int levelNumber)
         std::cout << "Level " << levelNumber << " complete!\n";
         Sleep(1500);
     }
+}
+
+void EasyMode::processGuess(int &guessedWords, int wordsToGuessCount, WordValidator &validator, Grid &grid)
+{
+    std::string guess;
+    std::cout << "Enter word (2-4 letters): ";
+    std::cin >> guess;
+    guess = toUpperCase(guess);
+
+    if (validator.isValidWord(guess))
+    {
+        if (validator.isInGrid(guess))
+        {
+            if (!grid.checkWord(guess))
+            {
+                std::cout << "Correct! Word found.\n";
+                player.updateScore(10);
+                guessedWords++;
+                grid.markWord(guess);
+
+                // Remove the guessed word from remainingWords
+                auto it = std::find(remainingWords.begin(), remainingWords.end(), guess);
+                if (it != remainingWords.end())
+                {
+                    remainingWords.erase(it);
+                }
+            }
+            else
+            {
+                std::cout << "Word already found.\n";
+            }
+        }
+        else
+        {
+            std::cout << "Word not in grid.\n";
+            player.decreaseChance();
+        }
+    }
+    else
+    {
+        std::cout << "Invalid word.\n";
+        player.decreaseChance();
+    }
+    Sleep(1500);
+    system("CLS");
+}
+void EasyMode::showGameStatus()
+{
+    setColor(CYAN);
+    std::cout << "╔════════════════════════════════╗\n";
+    std::cout << "║         GAME STATUS            ║\n";
+    std::cout << "╠════════════════════════════════╣\n";
+
+    setColor(WHITE);
+    std::cout << "║ Remaining Chances: ";
+    setColor(YELLOW);
+    std::cout << player.getRemainingChances();
+    setColor(CYAN);
+    std::cout << "           ║\n";
+
+    setColor(WHITE);
+    std::cout << "║ Words Remaining: ";
+    setColor(YELLOW);
+    std::cout << remainingWords.size();
+    setColor(CYAN);
+    std::cout << "             ║\n";
+
+    setColor(WHITE);
+    std::cout << "║ Score: ";
+    setColor(GREEN);
+    std::cout << player.getScore();
+    setColor(CYAN);
+    if (player.getScore() < 10)
+    {
+        std::cout << "                       ║\n";
+    }
+    else if (player.getScore() < 100)
+    {
+        std::cout << "                      ║\n";
+    }
+    else if (player.getScore() < 1000)
+    {
+        std::cout << "                     ║\n";
+    }
+    else
+    {
+        std::cout << "                       ║\n";
+    }
+    std::cout << "╚════════════════════════════════╝\n\n";
+    // Display Remaining Words
+    setColor(WHITE);
+    std::cout << "║ Remaining Words (Testing): ";
+    if (isWordShown)
+    {
+        for (const auto &word : remainingWords)
+        {
+            setColor(GREEN);
+            std::cout << word << " ";
+        }
+        std::cout << "\n";
+    }
+
+    setColor(RESET);
 }

@@ -22,6 +22,8 @@ bool WordValidator::isInGrid(const std::string &word)
     return searchHorizontal(word) || searchVertical(word) || searchDiagonal(word);
 }
 
+#include <iostream>
+
 bool WordValidator::searchHorizontal(const std::string &word)
 {
     int size = grid.getSize();
@@ -41,6 +43,7 @@ bool WordValidator::searchHorizontal(const std::string &word)
             }
             if (i == wordLength)
             {
+                std::cout << "Found horizontally: " << word << " at (" << row << "," << col << ")\n"; // Debug statement
                 return true;
             }
         }
@@ -67,6 +70,7 @@ bool WordValidator::searchVertical(const std::string &word)
             }
             if (i == wordLength)
             {
+                std::cout << "Found vertically: " << word << " at (" << row << "," << col << ")\n"; // Debug statement
                 return true;
             }
         }
@@ -78,7 +82,6 @@ bool WordValidator::searchDiagonal(const std::string &word)
 {
     int size = grid.getSize();
     int wordLength = word.length();
-
     // Top-left to bottom-right (\)
     for (int row = 0; row <= size - wordLength; ++row)
     {
@@ -94,11 +97,11 @@ bool WordValidator::searchDiagonal(const std::string &word)
             }
             if (i == wordLength)
             {
+                std::cout << "Found diagonally (\\): " << word << " at (" << row << "," << col << ")\n"; // Debug statement
                 return true;
             }
         }
     }
-
     // Bottom-left to top-right (/)
     for (int row = wordLength - 1; row < size; ++row)
     {
@@ -114,6 +117,7 @@ bool WordValidator::searchDiagonal(const std::string &word)
             }
             if (i == wordLength)
             {
+                std::cout << "Found diagonally (/): " << word << " at (" << row - i << "," << col + i << ")\n"; // Debug statement
                 return true;
             }
         }
