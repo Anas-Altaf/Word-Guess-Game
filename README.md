@@ -1,4 +1,3 @@
-```markdown
 # Word Search Puzzle Game
 
 A console-based Word Search Puzzle Game implemented in C++. Challenge yourself to find hidden words in a dynamic grid!
@@ -238,5 +237,3 @@ This project is licensed under the MIT License.
 ---
 
 Enjoy playing the Word Search Puzzle Game! Feel free to reach out with any questions or feedback.
-
-```
