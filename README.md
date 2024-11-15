@@ -103,7 +103,7 @@ README.md
 2. **Navigate to the Source Directory**
 
    ```bash
-   cd word-search-puzzle-game/src
+   cd Word-Guess-Game
    ```
 
 3. **Ensure All Required Files Are Present**
