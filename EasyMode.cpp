@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <conio.h>
 #include <windows.h>
+#include "Utility.h"
 
 EasyMode::EasyMode() : player("Player", 0, 5)
 {
@@ -18,9 +19,8 @@ void EasyMode::loadWords()
         std::string word;
         while (file >> word)
         {
-            // if (word.length() >= 2 && word.length() <= 4) {
+            word = toUpperCase(word);
             words.push_back(word);
-            // }
         }
         file.close();
     }
@@ -28,6 +28,7 @@ void EasyMode::loadWords()
     {
         std::cout << "Error: Unable to open easy_words.txt\n";
     }
+    //To See the Loaded Words
     loadedWords();
 }
 
@@ -89,6 +90,7 @@ void EasyMode::startLevel(int levelNumber)
 
         std::string guess;
         std::cin >> guess;
+        guess = toUpperCase(guess);
 
         if (validator.isValidWord(guess))
         {
