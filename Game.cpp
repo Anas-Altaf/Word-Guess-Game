@@ -93,7 +93,7 @@ void Game::startGame()
 
 void Game::showInstructions()
 {
-     clearScreen();
+    clearScreen();
     std::cout << "\n=== WORD SEARCH GAME - INSTRUCTIONS ===\n";
     std::cout << "1. Find hidden words in the grid\n";
     std::cout << "2. Words can be:\n";
@@ -118,7 +118,7 @@ void Game::aboutUs()
 {
     clearScreen();
     std::cout << "About Us:\n";
-    std::cout << "This game is developed by [Your Team Names].\n";
+    std::cout << "This game is developed by CodCop.\n";
     pause();
 }
 

@@ -97,7 +97,7 @@ README.md
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/word-search-puzzle-game.git
+   git clone https://github.com/Anas-Altaf/Word-Guess-Game.git
    ```
 
 2. **Navigate to the Source Directory**
@@ -230,7 +230,7 @@ This project is licensed under the MIT License.
 
 ## Acknowledgments
 
-- Developed by [Your Team Names].
+- Developed by CodCop.
 - Inspired by classic word search puzzles.
 - Special thanks to contributors and open-source communities that support C++ development.
 
